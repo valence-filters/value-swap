@@ -1,0 +1,60 @@
+<!-- Value Swap Filter Configurator -->
+<template>
+
+	<div class="slds-p-right_large">
+
+		<p class="slds-m-vertical_small">You can configure certain values for this field to be replaced before the record is written to the target system.</p>
+
+		<p class="slds-m-vertical_small">This is most often used to align enum/picklist values between two systems, but you can use it for any value you'd like to replace.</p>
+
+		<p class="slds-m-vertical_small"><strong>Note</strong>: If maintaining this list is starting to feel difficult and time-consuming, you should consider upgrading to a Filter that can consult a reference table that holds all the matches.</p>
+
+		<lightning-input class="slds-m-vertical_medium"
+						 type="checkbox"
+						 name="caseInsensitive"
+						 checked={configuration.caseInsensitive}
+						 label="Ignore capitalization when matching starting values."
+						 onchange={trackChange}></lightning-input>
+
+		<lightning-card title="Matches">
+
+			<lightning-button label="Add Match" onclick={addPair} slot="actions"></lightning-button>
+
+			<lightning-layout multiple-rows="true">
+				<template for:each={configuration.pairs} for:item="pair" for:index="index">
+
+					<lightning-layout-item key={pair.original} size="5" padding="around-small">
+						<lightning-input label="If You See"
+										 data-index={index}
+										 value={pair.original}
+										 onchange={longDebounceOriginalUpdated}
+										 onblur={originalUpdatedImmediately}
+										 placeholder="Starting value..."></lightning-input>
+					</lightning-layout-item>
+
+					<lightning-layout-item key={pair.original} size="5" padding="around-small">
+						<lightning-input label="Replace With"
+										 data-index={index}
+										 value={pair.swap}
+										 onchange={longDebounceSwapUpdated}
+										 onblur={swapUpdatedImmediately}
+										 placeholder="Change to..."></lightning-input>
+					</lightning-layout-item>
+
+					<lightning-layout-item key={pair.original} size="2" padding="around-small">
+						<div class="slds-m-top_large">
+							<lightning-button-icon icon-name="utility:close"
+												   alternative-text="Remove this item"
+												   value={index}
+												   onclick={removePair}></lightning-button-icon>
+						</div>
+					</lightning-layout-item>
+
+				</template>
+			</lightning-layout>
+
+		</lightning-card>
+
+	</div>
+
+</template>
