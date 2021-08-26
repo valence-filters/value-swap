@@ -74,6 +74,30 @@ private class ValueSwapFilterTests {
 		System.assertEquals('Deep Space Mining', records[4].getProperties().get('Department'));
 	}
 
+	@IsTest static void testBadConfig() {
+
+		// setup up an artificial Context to use for our test
+		valence.LinkContext context = new valence.LinkContext();
+		context.linkTargetName = 'Contact';
+		context.mappings = new Map<String, valence.Mapping>{
+			'firstMapping' => valence.ValenceTestUtil.createTestMapping('firstMapping', valence.FieldPath.buildPath('NoContact'), valence.FieldPath.buildPath('DoNotCall'), 'broken')
+		};
+
+		List<valence.RecordInFlight> records = new List<valence.RecordInFlight>{
+			new valence.RecordInFlight(new Map<String, Object>()),
+			new valence.RecordInFlight(new Map<String, Object>())
+		};
+
+		try {
+			new ValueSwapFilter().process(context, records);
+			System.assert(false, 'Expected an exception due to the malformed configuration.');
+		}catch(Exception e) {
+			System.assertEquals('valence.FilterException',e.getTypeName());
+			System.assertEquals('Cannot parse ValueSwapFilter configuration: broken',e.getMessage());
+			System.assertNotEquals(null, e.getCause());
+		}
+	}
+
 	@IsTest static void testNoConfigs() {
 
 		// setup up an artificial Context to use for our test
@@ -136,6 +160,32 @@ private class ValueSwapFilterTests {
 		System.assertEquals(true, new ValueSwapFilter().validFor(null));
 	}
 
+	@IsTest static void testDescribeSchema() {
+
+		// setup up an artificial Context to use for our test
+		String doNotCallConfig = JSON.serialize(new Map<String, Object>{
+			'caseInsensitive' => true,
+			'values' => new Map<String, String>{'N' => 'false', 'Y' => 'true'}
+		});
+		String departmentConfig = JSON.serialize(new Map<String, Object>{
+			'caseInsensitive' => false,
+			'values' => new Map<String, String>{'Space Exploration' => 'Deep Space Mining', 'Linguistics' => 'Liason'}
+		});
+
+		// setup up an artificial Context to use for our test
+		valence.LinkContext context = new valence.LinkContext();
+		context.linkTargetName = 'Contact';
+		context.mappings = new Map<String, valence.Mapping>{
+			'firstMapping' => valence.ValenceTestUtil.createTestMapping('firstMapping', valence.FieldPath.buildPath('NoContact'), valence.FieldPath.buildPath('DoNotCall'), doNotCallConfig),
+			'secondMapping' => valence.ValenceTestUtil.createTestMapping('secondMapping', valence.FieldPath.buildPath('PersonName'), valence.FieldPath.buildPath('LastName'), null),
+			'thirdMapping' => valence.ValenceTestUtil.createTestMapping('thirdMapping', valence.FieldPath.buildPath('Industry'), valence.FieldPath.buildPath('Department'), departmentConfig)
+		};
+
+		new ValueSwapFilter().describeSchema(context);
+
+		// there's no way atm to evaluate the result
+	}
+
 	@IsTest static void testConfigurationMethods() {
 
 		ValueSwapFilter filter = new ValueSwapFilter();
@@ -149,5 +199,7 @@ private class ValueSwapFilterTests {
 		});
 
 		System.assertEquals('<p>If a <em>case-insensitive</em> value on the left is found in this field, it will be replaced with the value on the right:</p><ul><li><strong>Linguistics</strong> => <em>Liason</em></li><li><strong>Space Exploration</strong> => <em>Deep Space Mining</em></li></ul>', filter.explainMappingConfiguration(config));
+
+		System.assertEquals('<p class="slds-theme_error">This configuration is malformed.</p>', filter.explainMappingConfiguration('broken'));
 	}
 }
