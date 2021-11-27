@@ -19,9 +19,9 @@ private class ValueSwapFilterTests {
 		valence.LinkContext context = new valence.LinkContext();
 		context.linkTargetName = 'Contact';
 		context.mappings = new Map<String, valence.Mapping>{
-			'firstMapping' => valence.ValenceTestUtil.createTestMapping('firstMapping', valence.FieldPath.buildPath('NoContact'), valence.FieldPath.buildPath('DoNotCall'), doNotCallConfig),
-			'secondMapping' => valence.ValenceTestUtil.createTestMapping('secondMapping', valence.FieldPath.buildPath('PersonName'), valence.FieldPath.buildPath('LastName'), null),
-			'thirdMapping' => valence.ValenceTestUtil.createTestMapping('thirdMapping', valence.FieldPath.buildPath('Industry'), valence.FieldPath.buildPath('Department'), departmentConfig)
+			'firstMapping' => valence.ValenceTestUtil.createTestMapping('firstMapping', 'NoContact', 'DoNotCall', doNotCallConfig),
+			'secondMapping' => valence.ValenceTestUtil.createTestMapping('secondMapping', 'PersonName', 'LastName', null),
+			'thirdMapping' => valence.ValenceTestUtil.createTestMapping('thirdMapping', 'Industry', 'Department', departmentConfig)
 		};
 
 		List<valence.RecordInFlight> records = new List<valence.RecordInFlight>{
@@ -80,7 +80,7 @@ private class ValueSwapFilterTests {
 		valence.LinkContext context = new valence.LinkContext();
 		context.linkTargetName = 'Contact';
 		context.mappings = new Map<String, valence.Mapping>{
-			'firstMapping' => valence.ValenceTestUtil.createTestMapping('firstMapping', valence.FieldPath.buildPath('NoContact'), valence.FieldPath.buildPath('DoNotCall'), 'broken')
+			'firstMapping' => valence.ValenceTestUtil.createTestMapping('firstMapping', 'NoContact', 'DoNotCall', 'broken')
 		};
 
 		List<valence.RecordInFlight> records = new List<valence.RecordInFlight>{
@@ -104,9 +104,9 @@ private class ValueSwapFilterTests {
 		valence.LinkContext context = new valence.LinkContext();
 		context.linkTargetName = 'Contact';
 		context.mappings = new Map<String, valence.Mapping>{
-			'firstMapping' => valence.ValenceTestUtil.createTestMapping('firstMapping', valence.FieldPath.buildPath('NoContact'), valence.FieldPath.buildPath('DoNotCall'), null),
-			'secondMapping' => valence.ValenceTestUtil.createTestMapping('secondMapping', valence.FieldPath.buildPath('PersonName'), valence.FieldPath.buildPath('LastName'), null),
-			'thirdMapping' => valence.ValenceTestUtil.createTestMapping('thirdMapping', valence.FieldPath.buildPath('Industry'), valence.FieldPath.buildPath('Department'), null)
+			'firstMapping' => valence.ValenceTestUtil.createTestMapping('firstMapping', 'NoContact', 'DoNotCall', null),
+			'secondMapping' => valence.ValenceTestUtil.createTestMapping('secondMapping', 'PersonName', 'LastName', null),
+			'thirdMapping' => valence.ValenceTestUtil.createTestMapping('thirdMapping', 'Industry', 'Department', null)
 		};
 
 		List<valence.RecordInFlight> records = new List<valence.RecordInFlight>{
@@ -176,9 +176,9 @@ private class ValueSwapFilterTests {
 		valence.LinkContext context = new valence.LinkContext();
 		context.linkTargetName = 'Contact';
 		context.mappings = new Map<String, valence.Mapping>{
-			'firstMapping' => valence.ValenceTestUtil.createTestMapping('firstMapping', valence.FieldPath.buildPath('NoContact'), valence.FieldPath.buildPath('DoNotCall'), doNotCallConfig),
-			'secondMapping' => valence.ValenceTestUtil.createTestMapping('secondMapping', valence.FieldPath.buildPath('PersonName'), valence.FieldPath.buildPath('LastName'), null),
-			'thirdMapping' => valence.ValenceTestUtil.createTestMapping('thirdMapping', valence.FieldPath.buildPath('Industry'), valence.FieldPath.buildPath('Department'), departmentConfig)
+			'firstMapping' => valence.ValenceTestUtil.createTestMapping('firstMapping', 'NoContact', 'DoNotCall', doNotCallConfig),
+			'secondMapping' => valence.ValenceTestUtil.createTestMapping('secondMapping', 'PersonName', 'LastName', null),
+			'thirdMapping' => valence.ValenceTestUtil.createTestMapping('thirdMapping', 'Industry', 'Department', departmentConfig)
 		};
 
 		new ValueSwapFilter().describeSchema(context);

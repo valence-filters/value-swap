@@ -45,7 +45,7 @@ global with sharing class ValueSwapFilter implements valence.SchemaAwareTransfor
 
 	public void process(valence.LinkContext context, List<valence.RecordInFlight> records) {
 
-		Map<valence.FieldPath, Configuration> configsByTargetPath = new Map<valence.FieldPath, Configuration>();
+		Map<List<String>, Configuration> configsByTargetPath = new Map<List<String>, Configuration>();
 
 		/*
 		 * Assemble any configs that have been set up by admins.
@@ -63,7 +63,7 @@ global with sharing class ValueSwapFilter implements valence.SchemaAwareTransfor
 						}
 						config.values = lowercaseValues;
 					}
-					configsByTargetPath.put(mapping.targetPath, config);
+					configsByTargetPath.put(mapping.targetPropertyPath, config);
 				}
 				catch(Exception e) {
 					throw new valence.FilterException('Cannot parse ValueSwapFilter configuration: ' + mapping.configuration, e);
@@ -80,9 +80,9 @@ global with sharing class ValueSwapFilter implements valence.SchemaAwareTransfor
 		 * Iterate through our records, using the configured mapping to potentially replace some values.
 		 */
 		for(valence.RecordInFlight record : records) {
-			for(valence.FieldPath targetPath : configsByTargetPath.keySet()) {
+			for(List<String> targetPath : configsByTargetPath.keySet()) {
 				Configuration config = configsByTargetPath.get(targetPath);
-				String value = String.valueOf(record.getProperty(targetPath));
+				String value = String.valueOf(record.getPropertyValue(targetPath));
 				if(value != null && config != null && config.values != null) {
 
 					// convert our incoming value to case insensitive if need be
@@ -90,7 +90,7 @@ global with sharing class ValueSwapFilter implements valence.SchemaAwareTransfor
 
 					// look to see if this value was configured by an admin to be replaced; if so, replace it
 					if(config.values.containsKey(keyToCompare)) {
-						record.setProperty(targetPath, config.values.get(keyToCompare));
+						record.setPropertyValue(targetPath, config.values.get(keyToCompare));
 					}
 				}
 			}
